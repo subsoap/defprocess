@@ -19,6 +19,7 @@ HANDLE GetProcessHandle(const char *process_name, DWORD dwAccess)
 
     if(hProcessSnap==INVALID_HANDLE_VALUE)
     {
+        CloseHandle( hProcessSnap );
         return INVALID_HANDLE_VALUE;
     }
 
@@ -26,17 +27,21 @@ HANDLE GetProcessHandle(const char *process_name, DWORD dwAccess)
 
     if(!Process32First(hProcessSnap,&pe32))
     {
+        CloseHandle( hProcessSnap );
         return INVALID_HANDLE_VALUE;
     }
 
     do
     {
         if(strcmp(pe32.szExeFile,process_name)==0)
-        return OpenProcess(dwAccess,0,pe32.th32ProcessID);
-
+        {
+            HANDLE hProcess = OpenProcess(dwAccess,0,pe32.th32ProcessID);
+            CloseHandle( hProcessSnap );
+            return hProcess;
+        }
     }
     while(Process32Next(hProcessSnap,&pe32));
-    
+
     CloseHandle( hProcessSnap );
     return( 0 );
 }
