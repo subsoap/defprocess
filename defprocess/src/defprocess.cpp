@@ -42,7 +42,7 @@ bool GetProcessHandle(const char *process_name, DWORD dwAccess)
     while(Process32Next(hProcessSnap,&pe32));
 
     CloseHandle( hProcessSnap );
-    return( FALSE );
+    return FALSE;
 }
 
 static int is_process_running(lua_State *L)
