@@ -10,7 +10,7 @@
 #include <windows.h>
 #include <tlhelp32.h>
 
-HANDLE GetProcessHandle(const char *process_name, DWORD dwAccess)
+bool GetProcessHandle(const char *process_name, DWORD dwAccess)
 {
     HANDLE hProcessSnap;
     PROCESSENTRY32 pe32 = {0};
@@ -35,25 +35,22 @@ HANDLE GetProcessHandle(const char *process_name, DWORD dwAccess)
     {
         if(strcmp(pe32.szExeFile,process_name)==0)
         {
-            HANDLE hProcess = OpenProcess(dwAccess,0,pe32.th32ProcessID);
             CloseHandle( hProcessSnap );
-            return hProcess;
+            return TRUE;
         }
     }
     while(Process32Next(hProcessSnap,&pe32));
 
     CloseHandle( hProcessSnap );
-    return( 0 );
+    return( FALSE );
 }
 
 static int is_process_running(lua_State *L)
 {
     const char *process_name = luaL_checkstring(L, 1);
 
-    HANDLE hProcess=GetProcessHandle(process_name,PROCESS_QUERY_INFORMATION);
+    lua_pushboolean(L, GetProcessHandle(process_name,PROCESS_QUERY_INFORMATION) == TRUE);
 
-    lua_pushboolean(L, (hProcess==0 || hProcess==INVALID_HANDLE_VALUE) != TRUE);
-    CloseHandle( hProcess );
     return 1;
 }
 
