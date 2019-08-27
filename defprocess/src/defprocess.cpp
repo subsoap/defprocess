@@ -20,7 +20,7 @@ bool GetProcessHandle(const char *process_name, DWORD dwAccess)
     if(hProcessSnap==INVALID_HANDLE_VALUE)
     {
         CloseHandle( hProcessSnap );
-        return INVALID_HANDLE_VALUE;
+        return FALSE;
     }
 
     pe32.dwSize=sizeof(PROCESSENTRY32);
@@ -28,7 +28,7 @@ bool GetProcessHandle(const char *process_name, DWORD dwAccess)
     if(!Process32First(hProcessSnap,&pe32))
     {
         CloseHandle( hProcessSnap );
-        return INVALID_HANDLE_VALUE;
+        return FALSE;
     }
 
     do
