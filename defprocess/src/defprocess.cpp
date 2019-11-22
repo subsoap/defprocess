@@ -82,7 +82,7 @@ dmExtension::Result InitializeMyExtension(dmExtension::Params* params)
 {
     // Init Lua
     LuaInit(params->m_L);
-    printf("Registered %s Extension\n", MODULE_NAME);
+    dmLogInfo("Registered %s Extension\n", MODULE_NAME);
     return dmExtension::RESULT_OK;
 }
 
